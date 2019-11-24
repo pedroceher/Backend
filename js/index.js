@@ -77,7 +77,7 @@ $("#mostrarTodos").click(function(){
 
 //funcion que renderiza en pantalla los items solicitados
 function setItems(datos){
- for(var i=0; i<=datos.length; i++){
+  for(var i=0; i<=datos.length; i++){
     $('.renderiza').append(`
       <div class="card horizontal">
         <div class="card-image ">
@@ -101,3 +101,30 @@ function setItems(datos){
     `);
   }
 }
+
+//funcion que obtiene lista de ciudades y tipos de casas sin repetir valores
+function getCiudades_Tipos(){
+  var arrCiudades = [];
+  var arrTipos =[];
+  $.getJSON("data-1.json", function (data){
+    $.each(data, function(key, house){
+      if(arrCiudades.indexOf(`${house.Ciudad}`) === -1){
+        arrCiudades.push(`${house.Ciudad}`);
+      }
+      if(arrTipos.indexOf(`${house.Tipo}`) === -1){
+        arrTipos.push(`${house.Tipo}`);
+      }
+    });
+    $.each(arrCiudades, function(key, ciudades){
+      $('#selectCiudad').append(`<option value="${ciudades}">${ciudades}</option>`);
+    });
+    $.each(arrTipos, function(key, tipos){
+      $('#selectTipo').append(`<option value="${tipos}">${tipos}</option>`);
+    });
+    $('select').material_select();
+    console.log(arrCiudades);
+    console.log(arrTipos);
+  });
+}
+
+getCiudades_Tipos();

@@ -9,4 +9,5 @@ function getData(){
   fclose($data_file);
   return $data;
 }
+
 ?>
