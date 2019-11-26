@@ -132,12 +132,13 @@ function setItems(data){
         </div>
         <div class="card-stacked">
           <div class="card-content">
-            <p>Dirección: ${house.Direccion} </br>
-            Ciudad: ${house.Ciudad} </br>
-            Telefono: ${house.Telefono} </br>
-            Codigo_Postal: ${house.Codigo_Postal} </br>
-            Tipo: ${house.Tipo} </br>
-            Precio: ${house.Precio} </br>
+            <p>
+            <b>Dirección: </b>${house.Direccion} </br>
+            <b>Ciudad: </b>${house.Ciudad} </br>
+            <b>Telefono: </b>${house.Telefono} </br>
+            <b>Codigo_Postal: </b>${house.Codigo_Postal} </br>
+            <b>Tipo: </b>${house.Tipo} </br>
+            <b>Precio: </b><span class = "precioTexto">${house.Precio}</span> </br>
           </p>
           </div>
           <div class="card-action">
