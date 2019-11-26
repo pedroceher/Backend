@@ -25,8 +25,8 @@ function inicializarSlider(){
     prefix: "$"
   });
 }
-/*
-  Función que reproduce el video de fondo al hacer scroll, y deteiene la reproducción al detener el scroll
+
+//  Función que reproduce el video de fondo al hacer scroll, y deteiene la reproducción al detener el scroll
 
 function playVideoOnScroll(){
   var ultimoScroll = 0,
@@ -47,10 +47,30 @@ function playVideoOnScroll(){
       video.pause();
     }, 10)
 }
-*/
 
-inicializarSlider();
-//playVideoOnScroll();
+
+//funcion que obtiene lista de ciudades y tipos de casas sin repetir valores
+function getCiudades_Tipos(){
+  var arrCiudades = [];
+  var arrTipos =[];
+  $.getJSON("data-1.json", function (data){
+    $.each(data, function(key, house){
+      if(arrCiudades.indexOf(`${house.Ciudad}`) === -1){
+        arrCiudades.push(`${house.Ciudad}`);
+      }
+      if(arrTipos.indexOf(`${house.Tipo}`) === -1){
+        arrTipos.push(`${house.Tipo}`);
+      }
+    });
+    $.each(arrCiudades, function(key, ciudades){
+      $('#selectCiudad').append(`<option value="${ciudades}">${ciudades}</option>`);
+    });
+    $.each(arrTipos, function(key, tipos){
+      $('#selectTipo').append(`<option value="${tipos}">${tipos}</option>`);
+    });
+    $('select').material_select(); //inicializar select del formulario
+  });
+}
 
 //Funcion click en MOSTRAR Todos
 
@@ -75,9 +95,36 @@ $("#mostrarTodos").click(function(){
   })
 });
 
+//funcion que filtra dependiendo los valores Ciudad, Tipo y Precio
+$('#formulario').submit(function(event){
+  event.preventDefault();
+  var ciudad = $('#selectCiudad').val();
+  var tipo = $('#selectTipo').val();
+  var rangoprecio = $('#rangoPrecio').val();
+  $.ajax({
+      url: './filter.php',
+      dataType: "json",
+      type: 'post',
+      data: {
+        Ciudad : ciudad,
+        Tipo : tipo,
+        Precio : rangoprecio
+      },
+      success:function(response){
+        console.log(response);
+        setItems(response);
+      },
+      error: function(){
+        window.alert('Error al obtener datos filtrados');
+      }
+  });
+});
+
 //funcion que renderiza en pantalla los items solicitados
-function setItems(datos){
-  for(var i=0; i<=datos.length; i++){
+function setItems(data){
+  var datos=data;
+  $('.renderiza').empty()
+  $.each(datos, function(key, house){
     $('.renderiza').append(`
       <div class="card horizontal">
         <div class="card-image ">
@@ -85,12 +132,12 @@ function setItems(datos){
         </div>
         <div class="card-stacked">
           <div class="card-content">
-            <p>Dirección: ${datos[i].Direccion} </br>
-            Ciudad: ${datos[i].Ciudad} </br>
-            Telefono: ${datos[i].Telefono} </br>
-            Codigo_Postal: ${datos[i].Codigo_Postal} </br>
-            Tipo: ${datos[i].Tipo} </br>
-            Precio: ${datos[i].Precio} </br>
+            <p>Dirección: ${house.Direccion} </br>
+            Ciudad: ${house.Ciudad} </br>
+            Telefono: ${house.Telefono} </br>
+            Codigo_Postal: ${house.Codigo_Postal} </br>
+            Tipo: ${house.Tipo} </br>
+            Precio: ${house.Precio} </br>
           </p>
           </div>
           <div class="card-action">
@@ -99,32 +146,12 @@ function setItems(datos){
         </div>
       </div>
     `);
-  }
-}
-
-//funcion que obtiene lista de ciudades y tipos de casas sin repetir valores
-function getCiudades_Tipos(){
-  var arrCiudades = [];
-  var arrTipos =[];
-  $.getJSON("data-1.json", function (data){
-    $.each(data, function(key, house){
-      if(arrCiudades.indexOf(`${house.Ciudad}`) === -1){
-        arrCiudades.push(`${house.Ciudad}`);
-      }
-      if(arrTipos.indexOf(`${house.Tipo}`) === -1){
-        arrTipos.push(`${house.Tipo}`);
-      }
-    });
-    $.each(arrCiudades, function(key, ciudades){
-      $('#selectCiudad').append(`<option value="${ciudades}">${ciudades}</option>`);
-    });
-    $.each(arrTipos, function(key, tipos){
-      $('#selectTipo').append(`<option value="${tipos}">${tipos}</option>`);
-    });
-    $('select').material_select();
-    console.log(arrCiudades);
-    console.log(arrTipos);
   });
 }
 
-getCiudades_Tipos();
+$(document).ready(function(){
+  inicializarSlider();
+  playVideoOnScroll();
+  getCiudades_Tipos();
+
+});
